@@ -1,9 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import styles from './SvgRenderer.module.css';
-import {ChangeParam, ChangeType, CustomImage, CustomText, SvgType} from "../../interface/interface";
+import {ChangeParam, ChangeType, CustomImage, CustomText, Point, SvgType} from "../../interface/interface";
 import {Text} from "../custom-svg-text/Text";
 import {CustomImageComponent} from "../custom-svg-image/Image";
 import {getDegree} from "../../util/utils";
+
+const CIRCLE_TAG_NAME = 'circle';
 
 const texts = [
     {
@@ -49,32 +51,18 @@ export function SvgRenderer() {
     const [textElements, setTextElements] = useState<CustomText[]>([
         ...texts,
     ]);
-    const [mouseDownPosition, setMouseDownPosition] = useState<{ x: number, y: number }>({x: 0, y: 0});
+    const [mouseDownPosition, setMouseDownPosition] = useState<Point>({x: 0, y: 0});
+    // const [elementOriginalPosition, setElementOriginalPosition] = useState<Point>({x: 0, y: 0});
     const [isRotate, setRotateMode] = useState<boolean>(false);
     const [selectedElement, setSelectedElement] = useState<CustomText | null | undefined>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
-    useEffect(() => {
-        setSelectedElement(prev => {
-            const selected = textElements.find(({selected}) => selected);
-            return prev?.elementKey === selected?.elementKey ? prev : selected;
-        })
-    }, [textElements]);
-
     const panElement = (evt: React.MouseEvent) => {
+        const {clientX, clientY} = evt;
         const {x: mouseDownedX, y: mouseDownedY} = mouseDownPosition;
         const {x: prevX, y: prevY} = selectedElement!;
-        const {clientX, clientY} = evt;
-        const movementX = evt.clientX - mouseDownedX;
-        const movementY = evt.clientY - mouseDownedY;
-
-        const svg = svgRef.current!;
-        let point = svg.createSVGPoint();
-        point.x = clientX;
-        point.y = clientY;
-        point = point.matrixTransform(svg.getScreenCTM()!.inverse());
-        console.log('point', point);
-
+        const movementX = clientX - mouseDownedX;
+        const movementY = clientY - mouseDownedY;
         setTextElements(prev => {
             return prev.map((element, idx) => {
                 return element.elementKey === selectedElement!.elementKey ?
@@ -103,7 +91,7 @@ export function SvgRenderer() {
         const target = evt.target as HTMLElement;
         const {clientX: x, clientY: y} = evt;
         setMouseDownPosition({x, y});
-        setRotateMode(target.tagName === 'circle');
+        setRotateMode(target.tagName === CIRCLE_TAG_NAME);
     }
 
     const onMouseMove = (evt: React.MouseEvent) => {
@@ -116,12 +104,19 @@ export function SvgRenderer() {
     const onChange = ({key, type, ...args}: ChangeParam) => {
         const _customText = {...args} as any as CustomText;
         setTextElements(prev => {
-            return prev.map(text => text.elementKey === key ? {...text, ..._customText} : {...text, selected: false})
+            const _textElements = prev.map(text => text.elementKey === key ? {...text, ..._customText} : {
+                ...text,
+                selected: false
+            });
+            if (type === ChangeType.select) {
+                setSelectedElement(_textElements.find(({selected}) => selected));
+            }
+            return _textElements;
         })
     }
 
     const getTextComponents = (elements: CustomText[]) => {
-        return elements.map(({elementKey,...rest}) => {
+        return elements.map(({elementKey, ...rest}) => {
             return <Text
                 {...rest as CustomText}
                 key={elementKey}

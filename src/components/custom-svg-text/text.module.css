@@ -2,6 +2,7 @@
     display: inline-block;
     position: relative;
     font-family: Amiri;
+    white-space:pre;
 
 }
 
@@ -13,6 +14,7 @@
     top: 0;
     resize: none;
     opacity: 0;
+    overflow: hidden;
 }
 
 .selectedBox{

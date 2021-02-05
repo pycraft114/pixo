@@ -1,4 +1,4 @@
-import {CustomText} from "../../interface/interface";
+import {ChangeType, CustomText} from "../../interface/interface";
 import React, {useEffect, useRef, useState} from 'react';
 import styles from './text.module.css';
 
@@ -47,15 +47,17 @@ export function Text(props: CustomText) {
     }
 
     const onTextEdit = (evt: any) => {
+        console.log(evt.target.value);
         onChange({key: elementKey, text: evt.target.value});
     }
 
     const onSelect = () => {
-        onChange({key: elementKey, selected: true})
+        onChange({key: elementKey, type: ChangeType.select, selected: true})
     }
 
     const getTspan = (text: string) => {
-        return text.split('\n').map((_text, idx) => {
+        console.log('text', text, text.split(/\n/g));
+        return text.split(/\n/g).map((_text, idx) => {
             return (<tspan x={0} dy='1.2em' key={idx}>{_text}</tspan>)
         })
     }
