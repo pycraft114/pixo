@@ -9,3 +9,17 @@
   width: 100vw;
   height: 100vh;
 }
+text{
+  user-select: none
+}
+
+.background1{
+  bottom: 121px;
+  left: -26px;
+  background: center / cover no-repeat url("./assets/template_scrapbook_2_1_image.png");
+}
+.background2{
+  left: 138px;
+  bottom: 0;
+  background: center / cover no-repeat url("./assets/template_scrapbook_2_2_image.png");
+}

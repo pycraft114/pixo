@@ -1,0 +1,33 @@
+.background{
+    width: 240px;
+    height: 270px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+}
+
+.file {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+}
+
+.fileInput{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.fileInput label {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+}

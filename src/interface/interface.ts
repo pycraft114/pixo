@@ -3,6 +3,11 @@ export enum SvgType{
     image = 'image'
 }
 
+export interface Point {
+    x: number,
+    y: number
+}
+
 export interface CustomSvgElement {
     x: number;
     y: number;
@@ -24,6 +29,8 @@ export interface CustomText extends CustomSvgElement{
 }
 
 export interface CustomImage extends CustomSvgElement{
-    url: string;
-    backgroundUrl: string;
+    width: number;
+    height: number;
+    // 임시방편
+    className: string;
 }
