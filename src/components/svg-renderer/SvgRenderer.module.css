@@ -1,0 +1,7 @@
+.svgContainer{
+    width: 335px;
+    height: 596px;
+    background:center / cover no-repeat url('../../assets/template_scrapbook_2_1_blending_multiply.png'),
+    center / contain no-repeat url('../../assets/template_scrapbook_2_3_image-x.png');
+    background-blend-mode: multiply;
+}
