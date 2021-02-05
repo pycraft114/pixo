@@ -1,24 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styles from './SvgRenderer.module.css';
-import {CustomImage, CustomSvgElement, CustomText, Point, SvgType} from "../../interface/interface";
+import {ChangeParam, ChangeType, CustomImage, CustomText, SvgType} from "../../interface/interface";
 import {Text} from "../custom-svg-text/Text";
 import {CustomImageComponent} from "../custom-svg-image/Image";
 import {getDegree} from "../../util/utils";
 
 const texts = [
     {
-        texts: ['2020'],
+        text: '2020',
         type: SvgType.text,
         x: 149,
         y: 90,
-        key: 'year'
+        elementKey: 'year'
     },
     {
-        texts: ['Summer'],
+        text: 'Summer',
         type: SvgType.text,
         x: 137,
         y: 160,
-        key: 'summer'
+        elementKey: 'summer'
     }
 ] as CustomText[];
 
@@ -27,7 +27,7 @@ const images = [
         type: SvgType.image,
         x: 137,
         y: 160,
-        key: 'image2',
+        elementKey: 'image2',
         degree: -4,
         width: 172,
         height: 216,
@@ -37,7 +37,7 @@ const images = [
         type: SvgType.image,
         x: 149,
         y: 90,
-        key: 'image1',
+        elementKey: 'image1',
         degree: 9,
         width: 172,
         height: 216,
@@ -49,22 +49,35 @@ export function SvgRenderer() {
     const [textElements, setTextElements] = useState<CustomText[]>([
         ...texts,
     ]);
-    const [selectedElement, setSelectedElement] = useState<CustomSvgElement | null>(null);
     const [mouseDownPosition, setMouseDownPosition] = useState<{ x: number, y: number }>({x: 0, y: 0});
     const [isRotate, setRotateMode] = useState<boolean>(false);
+    const [selectedElement, setSelectedElement] = useState<CustomText | null | undefined>(null);
+    const svgRef = useRef<SVGSVGElement>(null);
 
     useEffect(() => {
-
-    }, []);
+        setSelectedElement(prev => {
+            const selected = textElements.find(({selected}) => selected);
+            return prev?.elementKey === selected?.elementKey ? prev : selected;
+        })
+    }, [textElements]);
 
     const panElement = (evt: React.MouseEvent) => {
         const {x: mouseDownedX, y: mouseDownedY} = mouseDownPosition;
         const {x: prevX, y: prevY} = selectedElement!;
+        const {clientX, clientY} = evt;
         const movementX = evt.clientX - mouseDownedX;
         const movementY = evt.clientY - mouseDownedY;
+
+        const svg = svgRef.current!;
+        let point = svg.createSVGPoint();
+        point.x = clientX;
+        point.y = clientY;
+        point = point.matrixTransform(svg.getScreenCTM()!.inverse());
+        console.log('point', point);
+
         setTextElements(prev => {
             return prev.map((element, idx) => {
-                return element.key === selectedElement!.key ?
+                return element.elementKey === selectedElement!.elementKey ?
                     {...element, x: prevX + movementX, y: prevY + movementY} :
                     element;
             });
@@ -79,7 +92,7 @@ export function SvgRenderer() {
         const degree = getDegree(movementX, movementY);
         setTextElements(prev => {
             return prev.map((element, idx) => {
-                return element.key === selectedElement!.key ?
+                return element.elementKey === selectedElement!.elementKey ?
                     {...element, degree: degree - 90} :
                     element;
             });
@@ -100,19 +113,26 @@ export function SvgRenderer() {
         }
     }
 
-    const onSelect = (index: number) => {
-        setSelectedElement(textElements[index]);
+    const onChange = ({key, type, ...args}: ChangeParam) => {
+        const _customText = {...args} as any as CustomText;
+        setTextElements(prev => {
+            return prev.map(text => text.elementKey === key ? {...text, ..._customText} : {...text, selected: false})
+        })
     }
 
     const getTextComponents = (elements: CustomText[]) => {
-        return elements.map(({...rest}, idx) => {
-            return <Text {...rest as CustomText} onSelect={onSelect} index={idx}/>
+        return elements.map(({elementKey,...rest}) => {
+            return <Text
+                {...rest as CustomText}
+                key={elementKey}
+                elementKey={elementKey}
+                onChange={onChange}/>
         })
     }
 
     const getImageComponents = (elements: CustomImage[]) => {
-        return elements.map(({...rest}, idx) => {
-            return <CustomImageComponent {...rest as CustomImage} onSelect={onSelect} index={idx}/>
+        return elements.map(({...rest}) => {
+            return <CustomImageComponent {...rest as CustomImage} key={rest.elementKey}/>
         })
     }
 
@@ -121,6 +141,7 @@ export function SvgRenderer() {
             <svg className={styles.svgContainer}
                  onMouseDown={onMouseDown}
                  onMouseMove={onMouseMove}
+                 ref={svgRef}
             >
                 <foreignObject className={styles.foreignObject}>
                     {getImageComponents(images)}

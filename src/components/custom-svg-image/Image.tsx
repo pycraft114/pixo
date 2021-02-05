@@ -5,7 +5,6 @@ import {uploadFile} from "../../util/utils";
 
 export function CustomImageComponent(props: CustomImage) {
     const [image, setImage] = useState<string>('');
-    console.log('props', props);
     const onChange = (evt: any) => {
         uploadFile(evt).then(res => setImage(res))
     }

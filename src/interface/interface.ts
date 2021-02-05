@@ -3,9 +3,18 @@ export enum SvgType{
     image = 'image'
 }
 
+export enum ChangeType{
+    select = 'select'
+}
+
 export interface Point {
     x: number,
     y: number
+}
+
+export interface ChangeParam{
+    [key: string]: any;
+    key: string;
 }
 
 export interface CustomSvgElement {
@@ -13,16 +22,16 @@ export interface CustomSvgElement {
     y: number;
     degree: number;
     type: SvgType;
-    key: string;
+    elementKey: string;
     index: number;
     selected: boolean;
-    onDrag: (index: number, x: number, y: number) => void;
-    onSelect: (index: number) => void;
+    onChange: (param: ChangeParam) => void;
 }
+
 
 export interface CustomText extends CustomSvgElement{
     color?: string;
-    texts: string[];
+    text: string;
     fontSize?: number;
     letterSpacing?: number;
     alignment?: string;
