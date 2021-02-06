@@ -24,7 +24,7 @@ export interface Bbox {
 export interface ChangeParam {
     [key: string]: any;
 
-    key: string;
+    elementKey: string;
 }
 
 export interface CustomSvgElement {
@@ -36,6 +36,7 @@ export interface CustomSvgElement {
     index: number;
     selected: boolean;
     onChange: (param: ChangeParam) => void;
+    onSelect: (info: SelectionInfo) => void
 }
 
 
@@ -55,4 +56,9 @@ export interface CustomImage extends CustomSvgElement {
     className: string;
     // background image 가 이미 tilting 되어있어서 workaround
     contextImageDegree: number;
+}
+
+export interface SelectionInfo{
+    elementKey: string,
+    bbox: Bbox
 }

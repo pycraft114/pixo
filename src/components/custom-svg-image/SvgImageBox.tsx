@@ -8,11 +8,11 @@ export function SvgImageBox(props: CustomImage) {
     const [image, setImage] = useState<string>('');
     const [bbox, setBbox] = useState<Bbox>({x: 0, y: 0, width: 0, height: 0, cx: 0, cy: 0});
     const imageWrapperRef = useRef<any>(null);
-    const { width, height, contextImageDegree} = props;
+    const {width, height, contextImageDegree, x, y} = props;
 
     useEffect(() => {
         if (imageWrapperRef) {
-            const {x, y, width, height} = imageWrapperRef.current!.getBBox();
+            const {width, height} = imageWrapperRef.current!.getBBox();
             const cx = x + width / 2;
             const cy = y + height / 2;
             setBbox({x, y, width, height, cx, cy});

@@ -2,18 +2,18 @@ import React, {useRef, useState} from 'react';
 import styles from './SvgRenderer.module.css';
 import {
     ChangeParam,
-    ChangeType,
     CustomImage,
     CustomSvgElement,
     CustomText,
     Point,
+    SelectionInfo,
     SvgType
 } from "../../interface/interface";
 import {SvgText} from "../custom-svg-text/SvgText";
 import {SvgImageBox} from "../custom-svg-image/SvgImageBox";
-import {getDegree} from "../../util/utils";
 import image1 from '../../assets/template_scrapbook_2_1_image.png';
 import image2 from '../../assets/template_scrapbook_2_2_image.png';
+import {angleBetweenPoints} from "../../util/utils";
 
 const CIRCLE_TAG_NAME = 'circle';
 
@@ -21,15 +21,17 @@ const texts = [
     {
         text: '2020',
         type: SvgType.text,
-        x: 149,
-        y: 90,
+        x: 136,
+        y: 67,
+        fontSize: 30,
         elementKey: 'year'
     },
     {
         text: 'Summer',
         type: SvgType.text,
-        x: 137,
-        y: 160,
+        x: 83,
+        y: 120,
+        fontSize: 50,
         elementKey: 'summer'
     }
 ] as CustomText[];
@@ -59,6 +61,8 @@ const images = [
     }
 ] as CustomImage[]
 
+const defaultSelectionInfo = {elementKey: '', bbox: {x: 0, y: 0, width: 0, height: 0, cx: 0, cy: 0}};
+
 export function SvgRenderer() {
     const [elements, setElements] = useState<CustomSvgElement[]>([
         ...texts,
@@ -66,34 +70,37 @@ export function SvgRenderer() {
     ]);
     const [mouseDownPosition, setMouseDownPosition] = useState<Point>({x: 0, y: 0});
     const [isRotate, setRotateMode] = useState<boolean>(false);
-    const [selectedElement, setSelectedElement] = useState<CustomSvgElement | null | undefined>(null);
+    const [selectionInfo, setSelectionInfo] = useState<SelectionInfo | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
 
-    const panElement = (evt: React.MouseEvent) => {
+    const panElement = (evt: React.MouseEvent, selectionInfo: SelectionInfo) => {
         const {clientX, clientY} = evt;
         const {x: mouseDownedX, y: mouseDownedY} = mouseDownPosition;
-        const {x: prevX, y: prevY} = selectedElement!;
+        const {x: prevX, y: prevY} = selectionInfo.bbox;
         const movementX = clientX - mouseDownedX;
         const movementY = clientY - mouseDownedY;
         setElements(prev => {
             return prev.map((element, idx) => {
-                return element.elementKey === selectedElement!.elementKey ?
+                return element.elementKey === selectionInfo.elementKey ?
                     {...element, x: prevX + movementX, y: prevY + movementY} :
                     element;
             });
         });
     }
 
-    const rotateElement = (evt: React.MouseEvent) => {
-        const {x: mouseDownedX, y: mouseDownedY} = mouseDownPosition;
-        const movementX = evt.clientX - mouseDownedX;
-        const movementY = evt.clientY - mouseDownedY;
-        // Svg 의 (0,0) Coordinate 은 좌측상단이기 때문
-        const degree = getDegree(movementX, movementY);
+    const rotateElement = (evt: React.MouseEvent, selectionInfo: SelectionInfo) => {
+        const svg = svgRef.current!;
+        const point = svg.createSVGPoint();
+        const {clientX, clientY} = evt;
+        point.x = clientX;
+        point.y = clientY;
+        const calculatedPoint = point.matrixTransform(svg.getScreenCTM()!.inverse())
+        const {cx, cy} = selectionInfo.bbox;
+        const degree = angleBetweenPoints({x: cx, y: cy}, calculatedPoint);
         setElements(prev => {
             return prev.map((element, idx) => {
-                return element.elementKey === selectedElement!.elementKey ?
-                    {...element, degree: degree - 90} :
+                return element.elementKey === selectionInfo.elementKey ?
+                    {...element, degree} :
                     element;
             });
         });
@@ -102,29 +109,32 @@ export function SvgRenderer() {
     const onMouseDown = (evt: React.MouseEvent) => {
         const target = evt.target as HTMLElement;
         const {clientX: x, clientY: y} = evt;
+        if (target.tagName === 'svg') {
+            setSelectionInfo(null);
+        }
         setMouseDownPosition({x, y});
         setRotateMode(target.tagName === CIRCLE_TAG_NAME);
     }
 
     const onMouseMove = (evt: React.MouseEvent) => {
-        const isDragging = evt.buttons === 1 && selectedElement;
-        if (isDragging) {
-            isRotate ? rotateElement(evt) : panElement(evt);
+        const isDragging = evt.buttons === 1 && selectionInfo;
+        if (isDragging && selectionInfo) {
+            isRotate ? rotateElement(evt, selectionInfo) : panElement(evt, selectionInfo);
         }
     }
 
-    const onChange = ({key, type, ...args}: ChangeParam) => {
+    const onChange = ({elementKey, type, ...args}: ChangeParam) => {
         const changes = {...args};
         setElements(prev => {
-            const _elements = prev.map(element => element.elementKey === key ? {...element, ...changes} : {
+            return prev.map(element => element.elementKey === elementKey ? {...element, ...changes} : {
                 ...element,
                 selected: false
             });
-            if (type === ChangeType.select) {
-                setSelectedElement(_elements.find(({selected}) => selected));
-            }
-            return _elements;
         })
+    }
+
+    const onSelect = (info: SelectionInfo) => {
+        setSelectionInfo(info);
     }
 
     const getSvgComponents = (elements: CustomSvgElement[]) => {
@@ -135,10 +145,12 @@ export function SvgRenderer() {
                     key={elementKey}
                     elementKey={elementKey}
                     onChange={onChange}
+                    onSelect={onSelect}
                 /> :
                 <SvgImageBox {...rest as CustomImage}
                              key={elementKey}
                              elementKey={elementKey}
+                             onSelect={onSelect}
                              onChange={onChange}
                 />
 
