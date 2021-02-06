@@ -1,12 +1,10 @@
-import {CustomText} from "../../interface/interface";
+import {Bbox, CustomText} from "../../interface/interface";
 import React, {useEffect, useRef, useState} from 'react';
-import styles from './text.module.css';
-import {CustomElement} from "../custom-svg-element/Element";
+import styles from './SvgText.module.css';
+import {SvgBase} from "../custom-svg-element/SvgBase";
 
-const BUFFER = 5;
-
-export function Text(props: CustomText) {
-    const [bbox, setBbox] = useState<any>({x: 0, y: 0, width: 0, height: 0});
+export function SvgText(props: CustomText) {
+    const [bbox, setBbox] = useState<Bbox>({x: 0, y: 0, width: 0, height: 0});
     const {onChange, text, elementKey} = props;
     const textTagRef = useRef<any>(null);
 
@@ -27,7 +25,7 @@ export function Text(props: CustomText) {
     }
 
     return (
-        <CustomElement {...props} bbox={bbox}>
+        <SvgBase {...props} bbox={bbox}>
             <text className={styles.text} ref={textTagRef} fontStyle="Amiri">
                 {getTspan(text)}
             </text>
@@ -36,6 +34,6 @@ export function Text(props: CustomText) {
                               value={text}
                               onChange={onTextEdit}/>
             </foreignObject>
-        </CustomElement>
+        </SvgBase>
     )
 }

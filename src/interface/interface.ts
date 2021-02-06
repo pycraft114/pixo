@@ -1,9 +1,9 @@
-export enum SvgType{
+export enum SvgType {
     text = 'text',
     image = 'image'
 }
 
-export enum ChangeType{
+export enum ChangeType {
     select = 'select'
 }
 
@@ -12,8 +12,16 @@ export interface Point {
     y: number
 }
 
-export interface ChangeParam{
+export interface Bbox {
+    x: number,
+    y: number,
+    width: number,
+    height: number
+}
+
+export interface ChangeParam {
     [key: string]: any;
+
     key: string;
 }
 
@@ -29,7 +37,7 @@ export interface CustomSvgElement {
 }
 
 
-export interface CustomText extends CustomSvgElement{
+export interface CustomText extends CustomSvgElement {
     color?: string;
     text: string;
     fontSize?: number;
@@ -37,7 +45,7 @@ export interface CustomText extends CustomSvgElement{
     alignment?: string;
 }
 
-export interface CustomImage extends CustomSvgElement{
+export interface CustomImage extends CustomSvgElement {
     width: number;
     height: number;
     // 임시방편

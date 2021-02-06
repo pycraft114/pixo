@@ -8,7 +8,8 @@ export const uploadFile = (evt: any): Promise<string> => {
         fileReader.onload = () => {
             resolve(fileReader.result as string);
         };
-        fileReader.readAsDataURL(input.files[0]);
+        const file = input.files[0];
+        file ? fileReader.readAsDataURL(input.files[0]) : resolve('');
     });
 };
 

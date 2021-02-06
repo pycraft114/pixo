@@ -1,17 +1,18 @@
-import {ChangeType, CustomSvgElement} from "../../interface/interface";
+import {Bbox, ChangeType, CustomSvgElement} from "../../interface/interface";
 import React, {ReactNode, useRef, useState} from 'react';
-import styles from "../custom-svg-text/text.module.css";
+import styles from "../custom-svg-text/SvgText.module.css";
 
 interface CustomElementParam extends CustomSvgElement {
     children: ReactNode;
-    bbox: any;
+    bbox?: Bbox;
 }
 
 const BUFFER = 5;
 
-export function CustomElement(props: CustomElementParam) {
+export function SvgBase(props: CustomElementParam) {
     const {bbox, selected, onChange, elementKey, degree = 0, x = 0, y = 0} = props;
     const onMouseDown = (evt: React.MouseEvent) => {
+        console.log('on mousedown', elementKey);
         onChange({type: ChangeType.select, key: elementKey, selected: true});
     }
 

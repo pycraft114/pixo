@@ -16,9 +16,13 @@
 }
 
 .fileInput{
-    width: 100%;
-    height: 100%;
+    width: 50%;
+    height: 50%;
     position: absolute;
+}
+
+.fileInput:hover{
+    opacity: 0.5;
 }
 
 .fileInput label {
@@ -30,4 +34,8 @@
     justify-content: center;
     cursor: pointer;
     opacity: 0;
+}
+.foreignObject{
+    width: 100%;
+    height: 100%;
 }
