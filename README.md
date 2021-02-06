@@ -21,7 +21,9 @@ React 로 native SVG 를 처음 다뤄봤는데 앵귤러로 제작 했을 때�
   직접적인 DOM 조작이 가능하기에 State 의 변경 감지가 필요한 영역과 그렇지 않은 영역을 쉽게 분리가 가능한데 반해
   리액트의 경우 SVG Element 를 렌더링 하기 위해 다른 컴포넌트와 마찬가지로 React.Component 를 사용했어야 했습니다.
   처음에 접근 한 방식은 개별 Element 를 렌더링 하는 컴포넌트에 개별 State 을 따로 두어서 상태 관리를 하도록 했습니다.
+  
   ![Image](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/43422c62-3da8-47de-9042-d5f00447a3ea/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210206T100239Z&X-Amz-Expires=86400&X-Amz-Signature=2f18737e0f9d1d690fd2435f80a4c560a076976145911a2debf2dbe70bdd0163&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
+  
   하지만 이는 두번의 상태관리를 해야 한다는 것과 무엇보다 리액트의 Immutable State 관리를 위반하기 때문에 
   우선은 리액트의 principle 를 지켜  SVG 를 감싸고있는 컴포넌트에서 State 를 관리 해 top-down data flow 로 변경하였습니다. 
   SVG Element 의 속성 변경을 위해선 리액트 컴포넌트 의 지속적인 state 변경을 반영 해야 하는건데 이 때문에 리서치를 조금 했습니다.
