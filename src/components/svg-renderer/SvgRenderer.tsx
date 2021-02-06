@@ -61,8 +61,6 @@ const images = [
     }
 ] as CustomImage[]
 
-const defaultSelectionInfo = {elementKey: '', bbox: {x: 0, y: 0, width: 0, height: 0, cx: 0, cy: 0}};
-
 export function SvgRenderer() {
     const [elements, setElements] = useState<CustomSvgElement[]>([
         ...texts,
