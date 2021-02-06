@@ -1,12 +1,13 @@
-import {ChangeType, CustomText} from "../../interface/interface";
+import {CustomText} from "../../interface/interface";
 import React, {useEffect, useRef, useState} from 'react';
 import styles from './text.module.css';
+import {CustomElement} from "../custom-svg-element/Element";
 
 const BUFFER = 5;
 
 export function Text(props: CustomText) {
-    const {onChange, text, elementKey, degree = 0, x = 0, y = 0} = props;
     const [bbox, setBbox] = useState<any>({x: 0, y: 0, width: 0, height: 0});
+    const {onChange, text, elementKey} = props;
     const textTagRef = useRef<any>(null);
 
     useEffect(() => {
@@ -15,56 +16,18 @@ export function Text(props: CustomText) {
         }
     }, [textTagRef, text]);
 
-    const selectedView = () => {
-        if (bbox && props.selected) {
-            const {x, y, width, height} = bbox;
-            return (
-                <g>
-                    <rect className={styles.selectedBox} x={x} y={y} width={width} height={height}/>
-                    <circle r="4"
-                            transform={`translate(${width + BUFFER} ${BUFFER})`}
-                            strokeWidth={2}
-                            fill="#ff8b3d"
-                            stroke="#ffffff"/>
-                </g>
-            )
-        }
-    }
-
-    const getCenter = () => {
-        if (!bbox) {
-            return {
-                x: 0,
-                y: 0
-            }
-        } else {
-            const {x, y, width, height} = bbox;
-            return {
-                x: x + width / 2,
-                y: y + height / 2
-            };
-        }
-    }
-
     const onTextEdit = (evt: any) => {
-        console.log(evt.target.value);
         onChange({key: elementKey, text: evt.target.value});
     }
 
-    const onSelect = () => {
-        onChange({key: elementKey, type: ChangeType.select, selected: true})
-    }
-
     const getTspan = (text: string) => {
-        console.log('text', text, text.split(/\n/g));
         return text.split(/\n/g).map((_text, idx) => {
             return (<tspan x={0} dy='1.2em' key={idx}>{_text}</tspan>)
         })
     }
 
     return (
-        <g transform={`translate(${x} ${y}) rotate(${degree} ${getCenter().x} 0)`}
-           onMouseDown={onSelect}>
+        <CustomElement {...props} bbox={bbox}>
             <text className={styles.text} ref={textTagRef} fontStyle="Amiri">
                 {getTspan(text)}
             </text>
@@ -73,7 +36,6 @@ export function Text(props: CustomText) {
                               value={text}
                               onChange={onTextEdit}/>
             </foreignObject>
-            {selectedView()}
-        </g>
+        </CustomElement>
     )
 }

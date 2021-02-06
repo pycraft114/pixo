@@ -4,6 +4,7 @@ import {ChangeParam, ChangeType, CustomImage, CustomText, Point, SvgType} from "
 import {Text} from "../custom-svg-text/Text";
 import {CustomImageComponent} from "../custom-svg-image/Image";
 import {getDegree} from "../../util/utils";
+import {CustomElement} from "../custom-svg-element/Element";
 
 const CIRCLE_TAG_NAME = 'circle';
 
@@ -52,7 +53,6 @@ export function SvgRenderer() {
         ...texts,
     ]);
     const [mouseDownPosition, setMouseDownPosition] = useState<Point>({x: 0, y: 0});
-    // const [elementOriginalPosition, setElementOriginalPosition] = useState<Point>({x: 0, y: 0});
     const [isRotate, setRotateMode] = useState<boolean>(false);
     const [selectedElement, setSelectedElement] = useState<CustomText | null | undefined>(null);
     const svgRef = useRef<SVGSVGElement>(null);
