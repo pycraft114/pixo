@@ -4,7 +4,7 @@ import styles from "../custom-svg-text/SvgText.module.css";
 
 interface CustomElementParam extends CustomSvgElement {
     children: ReactNode;
-    bbox?: Bbox;
+    bbox: Bbox;
 }
 
 const BUFFER = 5;
@@ -32,23 +32,8 @@ export function SvgBase(props: CustomElementParam) {
         }
     }
 
-    const getCenter = () => {
-        if (!bbox) {
-            return {
-                x: 0,
-                y: 0
-            }
-        } else {
-            const {x, y, width, height} = bbox;
-            return {
-                x: x + width / 2,
-                y: y + height / 2
-            };
-        }
-    }
-
     return (
-        <g transform={`translate(${x} ${y}) rotate(${degree} ${getCenter().x} 0)`}
+        <g transform={`translate(${x} ${y}) rotate(${degree} ${bbox.cx} 0)`}
            onMouseDown={onMouseDown}>
             {props.children}
             {selectedView()}

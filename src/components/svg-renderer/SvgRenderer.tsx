@@ -12,6 +12,8 @@ import {
 import {SvgText} from "../custom-svg-text/SvgText";
 import {SvgImageBox} from "../custom-svg-image/SvgImageBox";
 import {getDegree} from "../../util/utils";
+import image1 from '../../assets/template_scrapbook_2_1_image.png';
+import image2 from '../../assets/template_scrapbook_2_2_image.png';
 
 const CIRCLE_TAG_NAME = 'circle';
 
@@ -38,20 +40,22 @@ const images = [
         x: 139,
         y: 344,
         elementKey: 'image2',
-        degree: -4,
-        width: 172,
-        height: 216,
-        className: 'background2'
+        contextImageDegree: -4,
+        width: 240,
+        height: 270,
+        className: 'background2',
+        backgroundImageUrl: image2
     },
     {
         type: SvgType.image,
         x: -17,
         y: 220,
         elementKey: 'image1',
-        degree: 9,
-        width: 172,
-        height: 216,
-        className: 'background1'
+        contextImageDegree: 9,
+        width: 240,
+        height: 270,
+        className: 'background1',
+        backgroundImageUrl: image1
     }
 ] as CustomImage[]
 
@@ -119,7 +123,6 @@ export function SvgRenderer() {
             if (type === ChangeType.select) {
                 setSelectedElement(_elements.find(({selected}) => selected));
             }
-            console.log(_elements);
             return _elements;
         })
     }

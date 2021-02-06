@@ -16,7 +16,9 @@ export interface Bbox {
     x: number,
     y: number,
     width: number,
-    height: number
+    height: number,
+    cx: number,
+    cy: number
 }
 
 export interface ChangeParam {
@@ -48,6 +50,9 @@ export interface CustomText extends CustomSvgElement {
 export interface CustomImage extends CustomSvgElement {
     width: number;
     height: number;
+    backgroundImageUrl: string;
     // 임시방편
     className: string;
+    // background image 가 이미 tilting 되어있어서 workaround
+    contextImageDegree: number;
 }
