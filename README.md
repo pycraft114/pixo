@@ -25,12 +25,12 @@ React 로 native SVG 를 처음 다뤄봤는데 앵귤러로 제작 했을 때�
   ![Image](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/43422c62-3da8-47de-9042-d5f00447a3ea/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210206T100239Z&X-Amz-Expires=86400&X-Amz-Signature=2f18737e0f9d1d690fd2435f80a4c560a076976145911a2debf2dbe70bdd0163&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
   
   하지만 이는 두번의 상태관리를 해야 한다는 것과 무엇보다 리액트의 Immutable State 관리를 위반하기 때문에 
-  우선은 리액트의 principle 를 지켜  SVG 를 감싸고있는 컴포넌트에서 State 를 관리 해 top-down data flow 로 변경하였습니다. 
-  SVG Element 의 속성 변경을 위해선 리액트 컴포넌트 의 지속적인 state 변경을 반영 해야 하는건데 이 때문에 리서치를 하며 구현 했습니다.
+  우선은 리액트의 principle 를 지켜  SVG 를 감싸고있는 컴포넌트에서 State 를 관리 하여 top-down data flow 로 변경하였습니다. 
+  리액트의 경우 SVG Element 의 attribute 변경을 위해선 리액트 컴포넌트 의 지속적인 state 변경을 반영 해야 하는건데 이와 관련하여 리서치를 하며 구현 했습니다.
   그 중 [리액트의 공식 문서](https://reactjs.org/docs/reconciliation.html#tradeoffs)에 따르면 list 형식의 컴포넌트 렌더시
   그것의 권장사항(공식 문저 참조)을 지키면 '보통' 의 경우에는 heuristic diff algorithm 이 퍼포먼스에 큰 영향이 없을 것이라 하지만,
-  SVG 를 감싸고있는 컴포넌트와 같이, 그것 내에서 지속적이고 반복적으로 interaction 을 요구하고 Large Dataset 을 필요로 하는경우 
-  이에 의존 해도되는지, 그리고 더 나은 아키텍쳐는 없는지 좀더 심층적으로 리서치를 해야겠습니다.
+  SVG 를 감싸고있는 컴포넌트와 같이, 그것 내에서 지속적이고 반복적으로 interaction 을 요구하고 Large Dataset 을 필요로 하는경우, 
+  이에 의존 해도되는지 그리고 더 나은 아키텍쳐는 없는지 좀더 심층적으로 리서치를 해야겠습니다.
   
 주어진시간내에 과제를 완료 하기 위해 WebGL 이 아닌 경험이 있는 SVG 기반으로 제작했습니다.
 
